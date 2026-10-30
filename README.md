@@ -1,87 +1,85 @@
 # Steel Plant Dispatch Analytics
 
-An end-to-end data analytics project based on steel plant dispatch operations, using Excel, SQL and Python.
+**End-to-end analytics portfolio project | Excel · SQL · Python**
 
-The idea behind this project was to understand how dispatch data can be used to track customer demand, monitor dispatch performance and identify patterns in day-to-day operations.
+An analysis of an anonymised steel-plant dispatch register to understand dispatch volume, dispatch value, customer and product mix, destinations, shift-wise movement, and selected commercial rates.
 
-I have divided the work into three parts, starting with Excel analysis, followed by SQL queries and Python-based exploratory data analysis.
+## Business context
+Steel dispatch teams need visibility into what was dispatched, to whom, where, and in what product/quality mix. This project converts a dispatch register into practical analysis that can support operational and commercial review.
 
-## Project Structure
+The project is framed around a Production & Industrial Engineering / PPIC perspective: translating plant dispatch records into useful information for review meetings and follow-up questions.
 
-### 1. Excel Analysis
-Started with Excel to explore the dispatch data and understand the overall business performance.
+## Questions explored
+- How does dispatched tonnage change month by month?
+- Which finished-goods products account for the largest dispatched tonnage?
+- Which customers and destinations account for the largest dispatch volumes and values?
+- How is dispatch distributed across shifts and recorded quality categories?
+- How do recorded NSR, UPR, freight and discount rates vary when weighted by dispatched tonnes?
+- What missing or unusual values should be checked before reporting?
 
-- Data cleaning and formatting
-- Customer-wise dispatch analysis
-- Monthly dispatch trends
-- KPI calculations
-- Executive dashboard
+## Dataset
+- **Rows:** 1,255 dispatch records.
+- **Period:** 19 May 2025 to 9 July 2026.
+- **Grain:** one row represents a dispatch-register line; it is not necessarily one unique customer order.
+- **Customer names:** anonymised as `Customer 001`, `Customer 002`, etc.
+- **File:** `data/Dispatch_Data_PowerBI.csv` (the filename is retained for compatibility with the original prepared extract; no Power BI work is included in this version).
 
-### 2. SQL Analysis
-Used SQL to explore the dataset and solve business-related questions.
+## Tools and workflow
 
-- Basic data exploration
-- Filtering and sorting
-- Aggregate functions
-- GROUP BY and HAVING
-- Joins and subqueries
-- CTEs and Window Functions
-- Customer and product-wise analysis
-
-### 3. Python – Exploratory Data Analysis
-Used Python to explore the data in more detail and understand different relationships and patterns.
-
-Libraries used:
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-
-Analysis performed:
-- Dataset overview and data quality checks
-- Missing values and duplicate records
-- Monthly dispatch analysis
-- Top customer and destination analysis
-- Product-wise dispatch distribution
-- Quality and shift analysis
-- Quantity and NSR distribution
-- Customer Pareto analysis
-- Correlation analysis
-
-## Tools Used
-
-| Tool | Purpose |
+| Tool | Work |
 |---|---|
-| Excel | Data analysis and dashboard |
-| SQL | Querying and business analysis |
-| Python | Exploratory data analysis |
-| Pandas & NumPy | Data manipulation |
-| Matplotlib & Seaborn | Visualizations |
-| GitHub | Project management and documentation |
+| Excel | Source-data review, calculations, summaries and dashboard-oriented analysis. |
+| SQL | Business questions and aggregations in SQLite-compatible SQL. |
+| Python | Reproducible data checks, KPI summaries and exploratory charts. |
 
-## Project Objective
+## Repository structure
 
-The main objective was to work with industrial dispatch data and understand how different analytical tools can help answer practical business questions.
+```text
+steel-plant-dispatch-analytics/
+├── data/
+│   └── Dispatch_Data_PowerBI.csv
+├── sql/
+│   └── dispatch_analysis.sql
+├── python/
+│   └── dispatch_eda.py
+├── notebooks/
+│   └── dispatch_eda.ipynb
+├── docs/
+│   ├── Data_Dictionary.md
+│   ├── Data_Quality_and_Limitations.md
+│   ├── Interview_Preparation.md
+│   └── Project_Status.md
+├── requirements.txt
+└── README.md
+```
 
-Some of the questions explored during this project include:
+## Run the Python analysis
 
-- Which customers account for the largest share of dispatch?
-- How does dispatch quantity change over time?
-- Which products and destinations contribute most to dispatch?
-- Are there noticeable differences between shifts?
-- What does the distribution of dispatch quantity and NSR look like?
-- Are there any unusual values or data quality issues?
+```bash
+git clone <your-repository-url>
+cd steel-plant-dispatch-analytics
+python -m pip install -r requirements.txt
+python python/dispatch_eda.py
+```
 
-## Repository Structure
+The script reads the CSV from `data/` and writes summary tables and charts to `outputs/`. Run it from the repository root.
 
-- `01_Excel_Analysis` – Excel workbook and dashboard.
-- `02_SQL_Analysis` – SQL queries and analysis.
-- `03_Python_EDA` – Jupyter Notebook, charts and findings.
+## Run the SQL analysis
 
-## About Me
+Import `data/Dispatch_Data_PowerBI.csv` into a SQLite-compatible tool as a table named `dispatch`, then execute `sql/dispatch_analysis.sql`. The queries are labelled by business question.
 
-**Aniket Lohakare**  
-B.Tech, Production and Industrial Engineering  
-National Institute of Technology, Jamshedpur
+## Analytical choices
+- Dispatch value is calculated by summing the row-level `Dispatch Value (Rs)` field.
+- `Total NSR (source field)` is not summed because it can repeat at sales-order level.
+- NSR, UPR, freight and discount are represented as **tonnage-weighted averages**, not simple averages.
+- Missing thickness/width values are retained as missing; no unsupported imputation is performed.
+- Customer and destination rankings describe dispatch recorded in this extract, not customer profitability or market share.
 
-Interested in Data Analytics, Business Analytics and Supply Chain Management.
+## What this dataset cannot prove
+This is a dispatch register, not a complete order-commitment and delivery-confirmation dataset. It does not independently establish promised delivery dates, actual delivery completion dates, planned production quantities, or customer acceptance. Therefore, **OTIF, on-time delivery, order fill rate, production-plan adherence and true order lead time are not calculated**. The meaning of the `Interval` field has not been independently verified, so it is treated as a source category only.
+
+## Interview preparation
+Explain the business question first, then the data grain, cleaning decisions, KPI definitions, key patterns you found, and limitations. Be ready to explain why weighted averages are more suitable than simple averages for rate fields when dispatch quantities differ. See `docs/Interview_Preparation.md`.
+
+## Responsible sharing
+Before making this repository public, confirm that you have permission to publish the anonymised extract and derived outputs. Anonymisation of customer names does not automatically mean the underlying operational data is approved for public release. If permission is not available, keep the repository private or replace the source with a synthetic dataset that preserves the structure but not the real business records.

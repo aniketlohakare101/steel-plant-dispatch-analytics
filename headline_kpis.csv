@@ -1,0 +1,2 @@
+total_dispatch_mt,dispatch_value_rs,dispatch_lines,unique_customers,unique_sales_orders,date_min,date_max,weighted_nsr_rs_per_t,weighted_upr_rs_per_t,weighted_freight_rs_per_t,weighted_discount_rs_per_t
+4272.474,273950203.04856,1255,109,351,2025-05-19,2026-07-09,64119.80577261793,65707.27240692628,1303.842165452616,-283.62446885574957
